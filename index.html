@@ -311,6 +311,22 @@ body.editing #editbar{display:block}
 /* ฝังสื่อ */
 .block-embed iframe{width:100%;height:460px;border:1px solid var(--line);border-radius:var(--radius);display:block}
 
+/* YouTube facade (ภาพปก + ปุ่มเล่น) — กันปัญหา error 153 ฝังไม่ขึ้น */
+.yt-box{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--radius);
+  overflow:hidden;border:1px solid var(--line)}
+.yt-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-facade{position:absolute;inset:0;background-size:cover;background-position:center;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.yt-facade::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.18)}
+.yt-play{position:relative;z-index:2;width:78px;height:54px;border:none;border-radius:14px;
+  background:rgba(0,0,0,.72);cursor:pointer;transition:.2s}
+.yt-play::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-35%,-50%);
+  border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff}
+.yt-facade:hover .yt-play{background:#f00}
+.yt-open{position:absolute;right:10px;bottom:10px;z-index:3;color:#fff;font-size:12px;
+  background:rgba(0,0,0,.6);padding:5px 11px;border-radius:8px;text-decoration:none}
+.yt-open:hover{background:#f00}
+
 /* lightbox */
 .lightbox{position:fixed;inset:0;z-index:90;background:rgba(8,12,10,.93);display:none;
   align-items:center;justify-content:center;flex-direction:column}
@@ -746,12 +762,13 @@ async function renderLinks(m){
         ${editing?`<button class="mini" data-edit="${it.id}">แก้ไข</button>
           <button class="mini del" data-del="${it.id}">ลบ</button>`:''}
       </div>
-      ${it.embed?`<div class="embed-wrap"><iframe src="${embedUrl(it.embed)}" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`:''}
+      ${it.embed?`<div class="embed-wrap">${embedHtml(it.embed)}</div>`:''}
     </div>`;
   });
   html+=`</div>`;
   if(editing) html+=`<div style="margin-top:18px"><button class="add-pill" id="addLink">+ เพิ่มฟอร์ม/ลิงก์</button></div>`;
   m.innerHTML=html;
+  bindEmbeds(m);
   if(editing){
     $('#addLink').onclick=()=>linkForm(col,null);
     m.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>linkForm(col,items.find(x=>x.id===b.dataset.edit)));
@@ -870,7 +887,7 @@ async function renderHome(m){
   html+=`</div>`;
   if(editing) html+=`<div style="margin-top:18px"><button class="add-pill" id="addBlock">+ เพิ่มบล็อกเนื้อหา</button></div>`;
   m.innerHTML=html;
-  bindLb(m); initCarousels(m);
+  bindLb(m); initCarousels(m); bindEmbeds(m);
   if(editing){
     const el=$('#editLegacy'); if(el) el.onclick=()=>editContentBlock('content/home',(legacy&&legacy.html)||'');
     $('#addBlock').onclick=()=>blockForm('homeblocks',null,HOME_TYPES);
@@ -914,7 +931,7 @@ function homeBlockHtml(b){
     r+=`</div>`;
     return `${H}${r}`;
   }
-  if(b.type==='embed') return `${H}<div class="block-embed">${b.embed?`<iframe src="${embedUrl(b.embed)}" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`:''}</div>`;
+  if(b.type==='embed') return `${H}<div class="block-embed">${embedHtml(b.embed)}</div>`;
   return H;
 }
 
@@ -1620,6 +1637,41 @@ function embedUrl(val){
 
   // Google Maps / อื่น ๆ : ใช้ตามเดิม (ส่วนใหญ่ฝังได้อยู่แล้ว)
   return u;
+}
+
+// ดึงรหัสคลิป YouTube จากลิงก์ทุกแบบ (คืน '' ถ้าไม่ใช่ YouTube)
+function ytId(val){
+  if(!val) return '';
+  const m=val.match(/src=["']([^"']+)["']/i); const s=m?m[1]:val;
+  const y=s.match(/youtu\.be\/([\w-]{6,})/)||
+          s.match(/youtube(?:-nocookie)?\.com\/(?:watch\?[^#]*\bv=|embed\/|shorts\/|live\/|v\/)([\w-]{6,})/);
+  if(y) return y[1];
+  if(/^[\w-]{11}$/.test(val.trim())) return val.trim();
+  return '';
+}
+// สร้าง HTML สำหรับฝังสื่อ: YouTube ใช้ facade (ภาพปก+ปุ่มเล่น) ที่ทนต่อ error 153,
+// สื่ออื่น (ฟอร์ม/แผนที่/ไดรฟ์/Vimeo) ใช้ iframe ตามปกติ
+function embedHtml(val){
+  if(!val) return '';
+  const id=ytId(val);
+  if(id){
+    const thumb='https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';
+    return `<div class="yt-box"><div class="yt-facade" data-yt="${id}" style="background-image:url('${thumb}')">
+      <button class="yt-play" aria-label="เล่นวิดีโอ"></button>
+      <a class="yt-open" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">เปิดบน YouTube ↗</a>
+    </div></div>`;
+  }
+  return `<iframe src="${embedUrl(val)}" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+}
+// กดภาพปก -> โหลด player จริง (user gesture + โดเมน nocookie ลดโอกาส error 153)
+function bindEmbeds(scope){
+  scope.querySelectorAll('.yt-facade').forEach(el=>{
+    el.onclick=(e)=>{
+      if(e.target.closest('.yt-open')) return;   // กดลิงก์ "เปิดบน YouTube" ไม่ต้องเล่นในหน้า
+      const id=el.dataset.yt;
+      el.outerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+    };
+  });
 }
 let toastTimer;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');
