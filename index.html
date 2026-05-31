@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>เว็บไซต์กลุ่มบริหารงาน</title>
+<link rel="icon" id="favicon" href="data:,">
 
 <!-- ฟอนต์ไทย: Mitr (หัวข้อ) + Sarabun (เนื้อหา ฟอนต์ราชการ) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -114,8 +115,38 @@ body.no-anim .cover *{animation:none!important;opacity:1!important;transform:non
 .brand .sub{font-size:12px;color:var(--muted)}
 .topbar .spacer{flex:1}
 .gear{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
-  background:transparent;color:var(--muted);font-size:18px;display:grid;place-items:center;transition:.2s}
+  background:transparent;color:var(--muted);font-size:18px;display:grid;place-items:center;transition:.2s;flex:0 0 auto}
+.gear+.gear{margin-left:8px}
 .gear:hover{color:var(--primary);border-color:var(--primary)}
+
+/* ประกาศสำคัญหน้าเว็บ */
+.announce{display:none;align-items:center;gap:10px;padding:11px 16px;background:var(--accent);
+  color:#3a2c08;font-size:14.5px;font-weight:600;line-height:1.5}
+.announce.show{display:flex}
+.announce .ann-ic{flex:0 0 auto;font-size:18px}
+.announce .ann-txt{flex:1;min-width:0}
+.announce .ann-x{flex:0 0 auto;border:none;background:rgba(0,0,0,.12);color:#3a2c08;border-radius:8px;
+  width:26px;height:26px;cursor:pointer;font-size:16px;line-height:1}
+.announce .ann-x:hover{background:rgba(0,0,0,.22)}
+
+/* QR modal */
+.qr-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.qr-canvas{background:#fff;padding:12px;border-radius:14px;border:1px solid var(--line);min-height:120px;
+  display:grid;place-items:center}
+.qr-canvas img,.qr-canvas canvas{display:block;border-radius:6px}
+.qr-url{width:100%;word-break:break-all;background:var(--bg);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted)}
+.qr-acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+/* คู่มือ */
+.guide{font-size:14.5px;line-height:1.7}
+.guide h4{font-family:var(--font-head);color:var(--primary);margin:14px 0 6px;font-size:16px}
+.guide ol{margin:0 0 4px;padding-left:20px}.guide ol li{margin-bottom:6px}
+.guide .step{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);
+  border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.guide .step .n{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;
+  display:grid;place-items:center;font-weight:700;font-size:13px}
+.guide .step .c{flex:1}.guide .step .c b{color:var(--primary)}
+.guide .tip{background:#fff7e6;border:1px solid #f0d9a0;border-radius:10px;padding:10px 12px;color:#7a5c10;font-size:13.5px}
 
 /* แถบแท็บ — ตรึงไว้ใต้แถบชื่อเมื่อเลื่อนหน้า */
 .tabbar{position:sticky;top:0;z-index:19;display:flex;gap:6px;overflow-x:auto;padding:10px 14px;background:var(--surface);
@@ -277,12 +308,54 @@ body.editing #editbar{display:block}
   padding:22px 24px;box-shadow:var(--shadow);white-space:pre-wrap;font-size:15.5px}
 .block-tools{display:flex;gap:8px;margin-top:10px}
 .block-wrap{position:relative}
+/* ลากจัดลำดับ */
+.dragging{opacity:.4}
+body.editing .tab{cursor:grab}
+body.editing .block-wrap{cursor:grab}
+body.editing .block-wrap::before{content:"⠿ ลาก/ใช้ ▲▼ จัดลำดับ";position:absolute;top:-9px;left:12px;z-index:6;
+  background:var(--accent);color:#3a2c08;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;pointer-events:none}
+
+/* textbox พร้อมเอฟเฟค + label */
+.textbox{position:relative;border-radius:var(--radius);padding:20px 22px;font-size:15.5px;line-height:1.7;
+  margin-top:6px;animation:tbpop .35s ease}
+@keyframes tbpop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.textbox .tb-label{display:inline-block;font-family:var(--font-head);font-size:13px;font-weight:700;
+  padding:3px 12px;border-radius:999px;margin-bottom:10px}
+.textbox .tb-body{white-space:pre-wrap}
+.tb-info{background:#eaf4ff;border:1px solid #bcdcff;color:#16456e}
+.tb-info .tb-label{background:#2b6cb0;color:#fff}
+.tb-success{background:#e9f8ef;border:1px solid #b5e6c9;color:#1c6b3f}
+.tb-success .tb-label{background:#2f855a;color:#fff}
+.tb-warning{background:#fff7e6;border:1px solid #f0d9a0;color:#7a5c10}
+.tb-warning .tb-label{background:#d69e2e;color:#fff}
+.tb-danger{background:#fdecea;border:1px solid #f5b5ae;color:#9b2c22}
+.tb-danger .tb-label{background:#c0392b;color:#fff}
+.tb-highlight{background:linear-gradient(120deg,var(--primary),var(--accent));color:#fff;border:none;box-shadow:var(--shadow)}
+.tb-highlight .tb-label{background:rgba(255,255,255,.25);color:#fff}
+.tb-outline{background:transparent;border:2px dashed var(--primary);color:var(--ink)}
+.tb-outline .tb-label{background:var(--primary);color:#fff}
+.tb-glow{background:var(--surface);border:1px solid var(--primary);color:var(--ink);
+  box-shadow:0 0 0 1px var(--primary),0 0 22px -4px var(--primary)}
+.tb-glow .tb-label{background:var(--primary);color:#fff}
+.tb-soft{background:var(--surface);border:1px solid var(--line);color:var(--ink);box-shadow:0 14px 30px -16px rgba(0,0,0,.5)}
+.tb-soft .tb-label{background:var(--accent);color:#3a2c08}
+
+/* marquee อักษรเลื่อน */
+.marquee{overflow:hidden;white-space:nowrap;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);padding:11px 0;box-shadow:var(--shadow)}
+.mq-track{display:inline-block;white-space:nowrap;will-change:transform;
+  font-family:var(--font-head);font-size:16px;color:var(--primary);animation:mqmove linear infinite}
+.marquee:hover .mq-track{animation-play-state:paused}
+@keyframes mqmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 /* ขนาดความกว้างของบล็อก (หน้าหลัก) */
 .blocks .block-wrap.size-sm{align-self:center;width:100%;max-width:560px}
 .blocks .block-wrap.size-md{align-self:center;width:100%;max-width:760px}
 .blocks .block-wrap.size-lg{align-self:center;width:100%;max-width:1000px}
 /* size-full = เต็มความกว้าง (ค่าเริ่มต้น) */
-.block-wrap .bw-tools{display:flex;gap:8px;margin-top:8px}
+.block-wrap .bw-tools{position:absolute;top:8px;right:8px;z-index:7;display:flex;gap:6px;
+  background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:10px;padding:5px;box-shadow:var(--shadow)}
+.block-wrap .bw-tools .mini{padding:6px 9px}
+.block-wrap .bw-tools .mini[disabled]{opacity:.3;cursor:default}
 
 /* รูปเดี่ยว */
 .single-img{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:var(--surface)}
@@ -427,9 +500,12 @@ body.editing #editbar{display:block}
       </div>
     </div>
     <div class="spacer"></div>
+    <button class="gear" id="guideBtn" title="คู่มือการตั้งค่า">❓</button>
+    <button class="gear" id="qrBtn" title="QR code / แชร์ลิงก์">🔳</button>
     <button class="gear" id="gearBtn" title="ผู้ดูแล">⚙️</button>
   </div>
 
+  <div id="announceBar" class="announce"></div>
   <div class="header-banner" id="headerBanner"></div>
   <div class="tabbar" id="tabbar"></div>
   <div class="main" id="main"></div>
@@ -571,6 +647,8 @@ async function loadSite(){
   SITE.cover   = SITE.cover   || '';   // รูปหน้าปก (พื้นหลังหน้า Landing)
   SITE.header  = SITE.header  || '';   // รูป Header แบนเนอร์ (เหนือแท็บ ทุกหน้า)
   SITE.headerBright = (SITE.headerBright==null?100:SITE.headerBright); // ความสว่าง banner (%)
+  SITE.announceOn   = !!SITE.announceOn;          // เปิด-ปิดประกาศสำคัญ
+  SITE.announceText = SITE.announceText || '';    // ข้อความประกาศสำคัญ
   SITE.primary = SITE.primary || '#1f4d3a';
   SITE.accent  = SITE.accent  || '#c19a3e';
   SITE.font    = SITE.font    || 'Mitr';
@@ -645,6 +723,22 @@ function applyTheme(){
   if(SITE.header){ hb.innerHTML=imgTag(SITE.header); hb.classList.add('show'); }
   else { hb.innerHTML=''; hb.classList.remove('show'); }
   hb.style.filter='brightness('+((SITE.headerBright||100)/100)+')';
+  // favicon = โลโก้
+  const fav=$('#favicon');
+  if(fav) fav.href = SITE.logo ? normImg(SITE.logo) : 'data:,';
+  // ประกาศสำคัญหน้าเว็บ
+  renderAnnounce();
+}
+// แสดง/ซ่อนแถบประกาศสำคัญ
+let announceDismissed=false;
+function renderAnnounce(){
+  const a=$('#announceBar');
+  if(SITE.announceOn && (SITE.announceText||'').trim() && !announceDismissed){
+    a.innerHTML=`<span class="ann-ic">📢</span><span class="ann-txt">${esc(SITE.announceText)}</span>
+      <button class="ann-x" id="annX" title="ปิด">×</button>`;
+    a.classList.add('show');
+    const x=$('#annX'); if(x) x.onclick=()=>{ announceDismissed=true; a.classList.remove('show'); a.innerHTML=''; setTimeout(stickyLayout,0); };
+  } else { a.classList.remove('show'); a.innerHTML=''; }
 }
 // ทำสีให้เข้มขึ้น/อ่อนลงเล็กน้อย
 function shade(hex,p){
@@ -661,6 +755,7 @@ function renderTabs(){
   TABS.forEach(t=>{
     const b=document.createElement('button');
     b.className='tab'+(activeTab&&activeTab.id===t.id?' active':'');
+    b.dataset.id=t.id;
     b.innerHTML=esc(t.title)+(editing&&t.type!=='home'?` <span class="x" title="ลบแท็บ">✕</span>`:'');
     b.onclick=(e)=>{
       if(e.target.classList.contains('x')){ e.stopPropagation(); deleteTab(t); return; }
@@ -672,7 +767,53 @@ function renderTabs(){
     const add=document.createElement('button');
     add.className='addtab'; add.textContent='+ เพิ่มแท็บ';
     add.onclick=openAddTab; bar.appendChild(add);
+    // ลากจัดลำดับแท็บได้
+    enableDragSort(bar,'.tab','x',ids=>reorderTabs(ids));
   }
+}
+// ===== ลากจัดลำดับ (ใช้ได้ทั้งแท็บแนวนอน และบล็อกแนวตั้ง) =====
+function enableDragSort(container,itemSel,axis,onReorder){
+  let drag=null;
+  const list=()=>[...container.querySelectorAll(itemSel)];
+  list().forEach(el=>{
+    el.setAttribute('draggable','true');
+    el.addEventListener('dragstart',e=>{ drag=el; el.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain','');}catch(_){}; });
+    el.addEventListener('dragend',()=>{ if(!drag)return; drag.classList.remove('dragging'); drag=null;
+      const ids=list().map(x=>x.dataset.id).filter(Boolean); onReorder(ids); });
+  });
+  container.addEventListener('dragover',e=>{
+    if(!drag) return; e.preventDefault();
+    const after=dragAfter(container,itemSel,axis,e.clientX,e.clientY);
+    const addBtn=container.querySelector('.addtab');
+    if(after==null){ if(addBtn) container.insertBefore(drag,addBtn); else container.appendChild(drag); }
+    else container.insertBefore(drag,after);
+  });
+}
+function dragAfter(container,itemSel,axis,x,y){
+  const els=[...container.querySelectorAll(itemSel+':not(.dragging)')];
+  let best={offset:-Infinity,el:null};
+  els.forEach(el=>{ const r=el.getBoundingClientRect();
+    const off = axis==='x' ? (x-r.left-r.width/2) : (y-r.top-r.height/2);
+    if(off<0 && off>best.offset) best={offset:off,el}; });
+  return best.el;
+}
+async function reorderTabs(ids){
+  for(let i=0;i<ids.length;i++){ const t=TABS.find(x=>x.id===ids[i]);
+    if(t && t.order!==i){ t.order=i; await Store.updateCol('tabs',t.id,{order:i}); } }
+  TABS.sort((a,b)=>(a.order||0)-(b.order||0));
+  renderTabs();
+}
+async function reorderBlocks(col,ids){
+  for(let i=0;i<ids.length;i++){ await Store.updateCol(col,ids[i],{order:i}); }
+  renderMain();
+}
+// เลื่อนบล็อกขึ้น/ลงทีละตำแหน่ง (ง่ายกว่าการลาก)
+function moveBlock(col,ids,id,dir){
+  const i=ids.indexOf(id); if(i<0) return;
+  const j=i+dir; if(j<0||j>=ids.length) return;
+  const t=ids[i]; ids[i]=ids[j]; ids[j]=t;
+  reorderBlocks(col,ids);
 }
 
 /* ============================================================
@@ -862,10 +1003,13 @@ async function renderNews(m){
 /* ============================================================
    ระบบ "บล็อกเนื้อหา" — ใช้ทั้งหน้าหลัก + ภาพกิจกรรม + lightbox
    ============================================================ */
-const TYPE_LABELS={text:'ข้อความ',image:'รูปเดียว',album:'อัลบั้มสไลด์โชว์',
+const TYPE_LABELS={text:'ข้อความ',textbox:'กล่องข้อความ (มีเอฟเฟค+ป้าย)',marquee:'อักษรวิ่ง (Marquee)',
+  image:'รูปเดียว',album:'อัลบั้มสไลด์โชว์',
   cardlink:'การ์ดฝังลิงก์',cards:'การ์ดหลายใบ',buttons:'ปุ่มลิงก์',embed:'ฝังสื่อ (YouTube/ฟอร์ม/แผนที่)'};
-const HOME_TYPES=['text','image','album','cards','buttons','embed'];
+const HOME_TYPES=['text','textbox','marquee','image','album','cards','buttons','embed'];
 const GALLERY_TYPES=['image','album','cardlink'];
+const TB_EFFECTS=[['info','ข้อมูล (ฟ้า)'],['success','สำเร็จ (เขียว)'],['warning','คำเตือน (เหลือง)'],
+  ['danger','สำคัญ (แดง)'],['highlight','ไฮไลต์ (ไล่สี)'],['outline','เส้นขอบประ'],['glow','เรืองแสง'],['soft','เงานุ่ม']];
 
 let EDIT_PHOTOS=[], EDIT_CARDS=[], EDIT_BUTTONS=[], LB_SETS={}, LB_CUR=null;
 
@@ -883,7 +1027,7 @@ async function renderHome(m){
     html+=`<div class="block-wrap"><div class="block-text">${esc(legacy.html)}</div>
       ${editing?`<div class="bw-tools"><button class="mini" id="editLegacy">แก้ไขข้อความเดิม</button></div>`:''}</div>`;
   }
-  blocks.forEach(b=>{ html+=`<div class="block-wrap size-${b.size||'full'}">${homeBlockHtml(b)}${editing?blockToolsHtml(b):''}</div>`; });
+  blocks.forEach((b,idx)=>{ html+=`<div class="block-wrap size-${b.size||'full'}" data-id="${b.id}">${homeBlockHtml(b)}${editing?blockToolsHtml(b,idx,blocks.length):''}</div>`; });
   html+=`</div>`;
   if(editing) html+=`<div style="margin-top:18px"><button class="add-pill" id="addBlock">+ เพิ่มบล็อกเนื้อหา</button></div>`;
   m.innerHTML=html;
@@ -893,15 +1037,33 @@ async function renderHome(m){
     $('#addBlock').onclick=()=>blockForm('homeblocks',null,HOME_TYPES);
     m.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>blockForm('homeblocks',blocks.find(x=>x.id===b.dataset.edit),HOME_TYPES));
     m.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>confirmDel('homeblocks',b.dataset.del));
+    const ids=blocks.map(x=>x.id);
+    m.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>moveBlock('homeblocks',ids.slice(),b.dataset.up,-1));
+    m.querySelectorAll('[data-down]').forEach(b=>b.onclick=()=>moveBlock('homeblocks',ids.slice(),b.dataset.down,1));
+    const blocksBox=m.querySelector('.blocks');
+    if(blocksBox && blocks.length>1) enableDragSort(blocksBox,'.block-wrap[data-id]','y',ids2=>reorderBlocks('homeblocks',ids2));
   }
 }
-function blockToolsHtml(b){
-  return `<div class="bw-tools"><button class="mini" data-edit="${b.id}">แก้ไข</button>
+function blockToolsHtml(b,idx,total){
+  const up = idx>0       ? `<button class="mini" data-up="${b.id}" title="เลื่อนขึ้น">▲</button>`   : `<button class="mini" disabled>▲</button>`;
+  const dn = idx<total-1 ? `<button class="mini" data-down="${b.id}" title="เลื่อนลง">▼</button>` : `<button class="mini" disabled>▼</button>`;
+  return `<div class="bw-tools">${up}${dn}
+    <button class="mini" data-edit="${b.id}">แก้ไข</button>
     <button class="mini del" data-del="${b.id}">ลบ</button></div>`;
 }
 function homeBlockHtml(b){
   const H=b.heading?`<div class="block-heading">${esc(b.heading)}</div>`:'';
   if(b.type==='text') return `${H}<div class="block-text">${esc(b.body||'')}</div>`;
+  if(b.type==='textbox'){
+    const eff=b.effect||'info';
+    return `<div class="textbox tb-${eff}">${b.label?`<span class="tb-label">${esc(b.label)}</span>`:''}<div class="tb-body">${esc(b.body||'')}</div></div>`;
+  }
+  if(b.type==='marquee'){
+    const sp={slow:38,normal:24,fast:13}[b.speed||'normal'];
+    const dir=(b.dir==='right')?'reverse':'normal';
+    const txt=esc(b.text||'');
+    return `${H}<div class="marquee"><span class="mq-track" style="animation-duration:${sp}s;animation-direction:${dir}">${txt}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${txt}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>`;
+  }
   if(b.type==='image'){
     LB_SETS[b.id]=[{url:b.photo||'',cap:b.caption||''}];
     const link=b.link?normUrl(b.link):'';
@@ -1072,6 +1234,8 @@ function blockForm(col,item,types){
     if(col!=='homeblocks') data.tabId=activeTab.id;   // ภาพกิจกรรมต้องผูกกับแท็บ
     const hv=$('#blk_heading'); if(hv) data.heading=hv.value.trim();
     if(t==='text'){ data.body=$('#blk_body').value; }
+    else if(t==='textbox'){ data.label=$('#blk_label').value.trim(); data.effect=$('#blk_effect').value; data.body=$('#blk_body').value; }
+    else if(t==='marquee'){ data.text=$('#blk_text').value.trim(); data.speed=$('#blk_speed').value; data.dir=$('#blk_dir').value; }
     else if(t==='image'){ data.photo=$('#blk_photo').value.trim(); data.caption=$('#blk_caption').value.trim(); if($('#blk_link')) data.link=$('#blk_link').value.trim(); }
     else if(t==='album'){ data.photos=EDIT_PHOTOS.filter(Boolean); }
     else if(t==='cardlink'){ data.photo=$('#blk_photo').value.trim(); data.title=$('#blk_title').value.trim(); data.desc=$('#blk_desc').value.trim(); data.link=$('#blk_link').value.trim(); }
@@ -1086,6 +1250,14 @@ function renderBlockFields(type,it){
   const heading=(label)=>field(label||'หัวข้อ (ไม่บังคับ)',`<input type="text" id="blk_heading" value="${attr(it.heading)}">`);
   if(type==='text'){
     h=heading()+field('เนื้อหา',`<textarea id="blk_body" style="min-height:160px">${esc(it.body||'')}</textarea>`,'เว้นบรรทัดได้ตามปกติ');
+  }else if(type==='textbox'){
+    h=field('ป้ายกำกับ (Label, ไม่บังคับ)',`<input type="text" id="blk_label" value="${attr(it.label)}" placeholder="เช่น ประกาศ, สำคัญ, หมายเหตุ">`)
+     +field('สไตล์/เอฟเฟค',`<select id="blk_effect">${TB_EFFECTS.map(o=>`<option value="${o[0]}" ${o[0]===(it.effect||'info')?'selected':''}>${o[1]}</option>`).join('')}</select>`)
+     +field('ข้อความ',`<textarea id="blk_body" style="min-height:120px">${esc(it.body||'')}</textarea>`,'เว้นบรรทัดได้');
+  }else if(type==='marquee'){
+    h=field('ข้อความวิ่ง',`<input type="text" id="blk_text" value="${attr(it.text)}" placeholder="ข้อความที่จะเลื่อนวิ่ง">`)
+     +field('ความเร็ว',`<select id="blk_speed">${[['slow','ช้า'],['normal','ปกติ'],['fast','เร็ว']].map(o=>`<option value="${o[0]}" ${o[0]===(it.speed||'normal')?'selected':''}>${o[1]}</option>`).join('')}</select>`)
+     +field('ทิศทาง',`<select id="blk_dir"><option value="left" ${it.dir!=='right'?'selected':''}>วิ่งไปทางซ้าย</option><option value="right" ${it.dir==='right'?'selected':''}>วิ่งไปทางขวา</option></select>`);
   }else if(type==='image'){
     h=imgField('blk_photo',it.photo,'รูปภาพ')
      +field('คำบรรยายใต้รูป (ไม่บังคับ)',`<input type="text" id="blk_caption" value="${attr(it.caption)}">`)
@@ -1391,19 +1563,83 @@ function deleteTab(t){
 /* ============================================================
    โหมดผู้ดูแล (PIN) + ตั้งค่าธีม
    ============================================================ */
+// จำสถานะยืนยันตัวตนระดับ session (กรอก PIN ครั้งเดียวจนกว่าจะปิดหน้า/แท็บ)
+function sesGet(k){ try{ return sessionStorage.getItem(k); }catch(e){ return window.__ses&&window.__ses[k]; } }
+function sesSet(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){ (window.__ses=window.__ses||{})[k]=v; } }
+
 $('#gearBtn').onclick=()=>{
   if(editing){ exitEditing(); return; }
+  if(sesGet('adminAuthed')==='1'){ enterEditing(); return; }   // ยืนยันแล้วใน session นี้ → เข้าได้เลย
   openModal('เข้าสู่โหมดผู้ดูแล',
     field('กรอก PIN',`<input type="password" id="pinInput" placeholder="••••" autocomplete="off">`,
-      'PIN เริ่มต้นคือ 1234 (เปลี่ยนได้ในหน้าตั้งค่าธีม)'),
+      'PIN เริ่มต้นคือ 1234 (เปลี่ยนได้ในหน้าตั้งค่าธีม) — กรอกครั้งเดียวจนกว่าจะปิดหน้าเว็บ'),
     `<button class="btn ghost" onclick="closeModal()">ยกเลิก</button>
      <button class="btn primary" id="pinOk">เข้าสู่ระบบ</button>`);
   $('#pinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#pinOk').click();});
   setTimeout(()=>$('#pinInput').focus(),50);
   $('#pinOk').onclick=()=>{
-    if($('#pinInput').value===String(SITE.pin)){ closeModal(); enterEditing(); }
+    if($('#pinInput').value===String(SITE.pin)){ sesSet('adminAuthed','1'); closeModal(); enterEditing(); }
     else toast('PIN ไม่ถูกต้อง');
   };
+};
+
+/* ---------- ปุ่ม QR code / แชร์ลิงก์ ---------- */
+function loadQRLib(cb){
+  if(window.QRCode){ cb(); return; }
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+  s.onload=()=>cb(); s.onerror=()=>cb(true);
+  document.head.appendChild(s);
+}
+$('#qrBtn').onclick=()=>{
+  const url=location.href.split('#')[0];
+  openModal('QR code / แชร์ลิงก์เว็บ',
+    `<div class="qr-wrap">
+       <div class="qr-canvas" id="qrCanvas">กำลังสร้าง QR…</div>
+       <div class="qr-url" id="qrUrl">${esc(url)}</div>
+       <div class="qr-acts">
+         <button class="btn ghost" id="qrCopy">📋 คัดลอกลิงก์</button>
+         <button class="btn primary" id="qrDl">⬇ ดาวน์โหลด QR</button>
+       </div>
+     </div>`,
+    `<button class="btn ghost" onclick="closeModal()">ปิด</button>`);
+  $('#qrCopy').onclick=async()=>{
+    try{ await navigator.clipboard.writeText(url); toast('คัดลอกลิงก์แล้ว'); }
+    catch(e){ const t=document.createElement('textarea'); t.value=url; document.body.appendChild(t); t.select();
+      try{document.execCommand('copy'); toast('คัดลอกลิงก์แล้ว');}catch(_){toast('คัดลอกไม่สำเร็จ');} t.remove(); }
+  };
+  const box=$('#qrCanvas');
+  loadQRLib((failed)=>{
+    box.innerHTML='';
+    if(!failed && window.QRCode){
+      new QRCode(box,{text:url,width:230,height:230,colorDark:'#1f4d3a',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+      $('#qrDl').onclick=()=>{
+        const c=box.querySelector('canvas');
+        const src=c?c.toDataURL('image/png'):(box.querySelector('img')||{}).src;
+        if(src){ const a=document.createElement('a'); a.href=src; a.download='qrcode.png'; a.click(); }
+      };
+    }else{
+      // สำรอง: ใช้บริการสร้าง QR ออนไลน์
+      const api='https://api.qrserver.com/v1/create-qr-code/?size=230x230&data='+encodeURIComponent(url);
+      box.innerHTML=`<img src="${api}" width="230" height="230" alt="QR">`;
+      $('#qrDl').onclick=()=>{ const a=document.createElement('a'); a.href=api; a.download='qrcode.png'; a.target='_blank'; a.click(); };
+    }
+  });
+};
+
+/* ---------- ปุ่มคู่มือการตั้งค่า ---------- */
+$('#guideBtn').onclick=()=>{
+  openModal('คู่มือการตั้งค่าเว็บ (ฉบับเข้าใจง่าย)',
+    `<div class="guide">
+      <div class="step"><div class="n">1</div><div class="c"><b>เข้าโหมดผู้ดูแล</b><br>กดปุ่มเฟือง ⚙️ มุมขวาบน เพื่อแก้ไขเว็บ (กดอีกครั้งเพื่อออก)</div></div>
+      <div class="step"><div class="n">2</div><div class="c"><b>ตั้งค่าธีม</b> (ปุ่ม “ตั้งค่าธีม” ในโหมดผู้ดูแล)<br>ตั้งชื่อเว็บ, อัปโหลด<b>โลโก้</b> (จะกลายเป็นไอคอนเว็บอัตโนมัติ), <b>รูปหน้าปก</b>, <b>รูป Header</b> ปรับสว่าง/มืดได้, เลือกสี/ฟอนต์ และเปิด<b>แถบประกาศสำคัญ</b></div></div>
+      <div class="step"><div class="n">3</div><div class="c"><b>เชื่อมต่อเพื่อบันทึกถาวร</b><br>วาง <b>Firebase config</b> เพื่อให้ข้อมูลถูกบันทึก และวาง <b>Apps Script URL</b> + <b>Folder ID</b> ของ Google Drive เพื่อให้<b>อัปโหลดรูป/ไฟล์</b>ได้ (ดูวิธีสร้างในส่วนภาคผนวกท้ายไฟล์)</div></div>
+      <div class="step"><div class="n">4</div><div class="c"><b>เพิ่มแท็บเมนู</b><br>กด “+ เพิ่มแท็บ” แล้วเลือกชนิด: เนื้อหาอิสระ, การ์ด/รายชื่อ, ลิงก์/ฟอร์ม, เอกสาร/ไฟล์, หรือ <b>ภาพกิจกรรม</b> (รูปเดี่ยว/อัลบั้ม/การ์ดลิงก์)</div></div>
+      <div class="step"><div class="n">5</div><div class="c"><b>ใส่เนื้อหาหน้าหลัก</b><br>กด “+ เพิ่มบล็อกเนื้อหา” เลือกชนิด (ข้อความ/รูป/อัลบั้มสไลด์/การ์ด/ปุ่มลิงก์/ฝังคลิป YouTube) และเลือก<b>ขนาดการแสดงผล</b>ได้</div></div>
+      <div class="step"><div class="n">6</div><div class="c"><b>แชร์เว็บ</b><br>กดปุ่ม 🔳 เพื่อเอา <b>QR code</b> และลิงก์ไปแชร์/ติดป้ายได้</div></div>
+      <div class="tip">💡 เคล็ดลับ: หลังตั้งค่าเสร็จ กด “บันทึก” ทุกครั้ง • รูป/ไฟล์ที่อัปโหลดจะถูกเก็บใน Google Drive ของบัญชีที่ตั้งค่า Apps Script ไว้</div>
+    </div>`,
+    `<button class="btn primary" onclick="closeModal()">เข้าใจแล้ว</button>`);
 };
 function enterEditing(){ editing=true; document.body.classList.add('editing'); renderTabs(); renderMain(); setTimeout(stickyLayout,0); toast('เข้าสู่โหมดผู้ดูแลแล้ว'); }
 function exitEditing(){ editing=false; document.body.classList.remove('editing'); renderTabs(); renderMain(); setTimeout(stickyLayout,0); }
@@ -1421,6 +1657,10 @@ $('#themeBtn').onclick=()=>{
       <input type="range" id="s_hbright" min="30" max="140" value="${SITE.headerBright}" style="flex:1">
       <span id="s_hbright_v" style="min-width:48px;text-align:right;font-weight:600;color:var(--primary)">${SITE.headerBright}%</span>
     </div>`,'ลากไปทางซ้าย = มืดลง, ขวา = สว่างขึ้น (แสดงตัวอย่างทันทีบนแบนเนอร์)')+
+    field('ประกาศสำคัญหน้าเว็บ',`<label style="display:flex;align-items:center;gap:8px;font-weight:500;cursor:pointer">
+      <input type="checkbox" id="s_annon" ${SITE.announceOn?'checked':''} style="width:18px;height:18px;flex:0 0 auto"> เปิดแสดงแถบประกาศด้านบน
+    </label>
+    <textarea id="s_anntext" style="min-height:70px;margin-top:8px" placeholder="พิมพ์ข้อความประกาศที่จะแสดงด้านบนของเว็บ">${esc(SITE.announceText)}</textarea>`,'เปิดเพื่อแสดงแถบประกาศสีเหลืองด้านบนทุกหน้า (ผู้เข้าชมกดปิดชั่วคราวได้)')+
     `<div class="color-row">
       ${field('สีหลัก',`<input type="color" id="s_primary" value="${SITE.primary}">`)}
       ${field('สีรอง',`<input type="color" id="s_accent" value="${SITE.accent}">`)}
@@ -1453,6 +1693,8 @@ $('#themeBtn').onclick=()=>{
     SITE.cover=$('#s_cover').value.trim();
     SITE.header=$('#s_header').value.trim();
     SITE.headerBright=parseInt($('#s_hbright').value,10)||100;
+    SITE.announceOn=$('#s_annon').checked; SITE.announceText=$('#s_anntext').value.trim();
+    announceDismissed=false;
     SITE.primary=$('#s_primary').value; SITE.accent=$('#s_accent').value;
     SITE.font=$('#s_font').value; SITE.anim=$('#s_anim').value==='1';
     SITE.pin=$('#s_pin').value.trim()||ADMIN_PIN_DEFAULT;
