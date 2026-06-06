@@ -2400,8 +2400,7 @@ $('#gearBtn').onclick=()=>{
   if(editing){ exitEditing(); return; }
   if(sesGet('adminAuthed')==='1'){ enterEditing(); return; }   // ยืนยันแล้วใน session นี้ → เข้าได้เลย
   openModal('เข้าสู่โหมดผู้ดูแล',
-    field('กรอก PIN',`<input type="password" id="pinInput" placeholder="••••" autocomplete="off">`,
-      'PIN เริ่มต้นคือ 1234 (เปลี่ยนได้ในหน้าตั้งค่าธีม) — กรอกครั้งเดียวจนกว่าจะปิดหน้าเว็บ'),
+    field('กรอก PIN',`<input type="password" id="pinInput" placeholder="••••" autocomplete="off">`),
     `<button class="btn ghost" onclick="closeModal()">ยกเลิก</button>
      <button class="btn primary" id="pinOk">เข้าสู่ระบบ</button>`);
   $('#pinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#pinOk').click();});
