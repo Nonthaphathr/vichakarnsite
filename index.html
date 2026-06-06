@@ -2120,7 +2120,7 @@ function openModal(title,bodyHTML,footHTML){
 }
 function closeModal(){ $('#overlay').classList.remove('show'); }
 $('#mClose').onclick=closeModal;
-$('#overlay').onclick=(e)=>{ if(e.target.id==='overlay') closeModal(); };
+// ไม่ปิด modal เมื่อคลิกพื้นหลัง (กันงานที่ยังทำไม่เสร็จหายโดยไม่ตั้งใจ) — ปิดได้เฉพาะปุ่มกากบาท/ปุ่มในฟุตเตอร์
 
 function field(label,inner,hint){return `<div class="field"><label>${label}</label>${inner}${hint?`<div class="hint">${hint}</div>`:''}</div>`;}
 function imgField(id,val,label){
